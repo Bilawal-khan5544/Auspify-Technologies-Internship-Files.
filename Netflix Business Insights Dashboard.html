@@ -1,0 +1,50 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><title>Netflix Business Insights Dashboard</title>
+<style>
+:root{--bg:#fff;--card:#f6f6f7;--tx:#1b1b1f;--mu:#666;--rd:#e50914;--gr:#8a8a93;--bd:#e2e2e6;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#141416;--card:#1f1f23;--tx:#f1f1f3;--mu:#a0a0a8;--gr:#7a7a84;--bd:#333338}}
+:root[data-theme="dark"]{--bg:#141416;--card:#1f1f23;--tx:#f1f1f3;--mu:#a0a0a8;--gr:#7a7a84;--bd:#333338}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--tx);font-family:system-ui,-apple-system,"Segoe UI",sans-serif;line-height:1.45}
+main{max-width:1100px;margin:0 auto;padding:20px 16px 40px}h1{margin:0;font-size:1.6rem}h2{font-size:1rem;margin:0 0 8px}.sub{color:var(--mu);margin:2px 0 16px}
+.kpis,.grid{display:grid;gap:12px}.kpis{grid-template-columns:repeat(auto-fit,minmax(150px,1fr));margin-bottom:16px}.grid{grid-template-columns:repeat(auto-fit,minmax(310px,1fr))}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:10px;padding:14px;min-width:0}.kpi b{display:block;font-size:1.6rem;color:var(--rd)}.kpi span{color:var(--mu);font-size:.85rem}
+.bar{display:flex;gap:8px;margin:0 0 14px;flex-wrap:wrap;align-items:center}button{border:1px solid var(--bd);background:var(--card);color:var(--tx);padding:6px 14px;border-radius:20px;cursor:pointer;font:inherit}button.on{background:var(--rd);border-color:var(--rd);color:#fff}
+.cv{position:relative;height:250px}h3{margin:24px 0 8px}ol{padding-left:20px;margin:0}li{margin-bottom:8px}.note{color:var(--mu);font-size:.8rem;margin-top:6px}
+</style></head><body><main>
+<h1>Netflix Business Insights Dashboard</h1><p class="sub">Analytics, predictive models and recommendations from 8,790 Netflix titles (data to September 2021)</p>
+<div class="kpis"><div class="card kpi"><b>8,790</b><span>Titles</span></div><div class="card kpi"><b>69.7%</b><span>Movies (30.3% TV Shows)</span></div><div class="card kpi"><b>85</b><span>Countries</span></div><div class="card kpi"><b>95.2%</b><span>Best classifier accuracy</span></div></div>
+<div class="bar"><span>View:</span><button class="on" data-t="All">All</button><button data-t="Movie">Movies</button><button data-t="TV Show">TV Shows</button><span id="cnt" class="note"></span></div>
+<div class="grid">
+<div class="card"><h2>Titles added to Netflix per year</h2><div class="cv"><canvas id="c1"></canvas></div></div>
+<div class="card"><h2>Top countries</h2><div class="cv"><canvas id="c2"></canvas></div></div>
+<div class="card"><h2>Top categories</h2><div class="cv"><canvas id="c3"></canvas></div></div>
+<div class="card"><h2>Most common ratings</h2><div class="cv"><canvas id="c4"></canvas></div></div>
+<div class="card"><h2>Forecast: titles per release year</h2><div class="cv"><canvas id="c5"></canvas></div><div class="note">Holt damped-trend model; 2021 left out (partial year).</div></div>
+<div class="card"><h2>Movie vs TV Show classifier accuracy (%)</h2><div class="cv"><canvas id="c6"></canvas></div></div></div>
+<h3>Business recommendations</h3><div class="card"><ol>
+<li><b>Invest more in series.</b> TV Shows rose from 25% of additions in 2018 to 34% in 2021, yet 67% of shows have only one season. Renewing proven shows would build lasting audiences.</li>
+<li><b>Grow regional content.</b> India (1,057), the UK (638) and Pakistan (421) follow the US (3,240), and International Movies is the top category. Pakistan is TV-led (350 of 421 titles), a clear niche to expand.</li>
+<li><b>Focus on quality over volume.</b> Titles per release year peaked in 2018 (1,146) and the model forecasts about 970-980 per year, so growth will come from better selection, not more titles.</li>
+<li><b>Look at family content.</b> Only 10% of titles are rated for kids, while 46% target adults. Check this gap against viewing data before investing.</li>
+<li><b>Use "more like this" recommendations.</b> The content-based recommender matched genres about 9 times better than random picks, which can support discovery.</li>
+<li><b>Fix metadata gaps.</b> 29% of titles have no director listed. Complete data improves search, recommendations and models.</li></ol>
+<div class="note">The dataset has no viewership or revenue data, so these are analysis-based suggestions to validate with business data.</div></div>
+</main>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<script>
+const P={"D": {"All": {"ya": [[2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021], [24, 82, 426, 1185, 1648, 2016, 1879, 1498]], "c": [["United States", "India", "United Kingdom", "Pakistan", "Canada", "Japan", "South Korea", "France"], [3240, 1057, 638, 421, 271, 259, 214, 213]], "g": [["International Movies", "Dramas", "Comedies", "International TV Shows", "Documentaries", "Action & Adventure", "TV Dramas", "Independent Movies"], [2752, 2426, 1674, 1349, 869, 859, 762, 756]], "r": [["TV-MA", "TV-14", "TV-PG", "R", "PG-13", "TV-Y7"], [3205, 2157, 861, 799, 490, 333]], "n": 8790}, "Movie": {"ya": [[2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021], [19, 56, 251, 836, 1237, 1424, 1284, 993]], "c": [["United States", "India", "United Kingdom", "Canada", "France", "Spain", "Egypt", "Nigeria"], [2395, 976, 387, 187, 148, 129, 109, 96]], "g": [["International Movies", "Dramas", "Comedies", "Documentaries", "Action & Adventure", "Independent Movies", "Children & Family Movies", "Romantic Movies"], [2752, 2426, 1674, 869, 859, 756, 641, 616]], "r": [["TV-MA", "TV-14", "R", "TV-PG", "PG-13", "PG"], [2062, 1427, 797, 540, 490, 287]], "n": 6126}, "TV Show": {"ya": [[2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021], [5, 26, 175, 349, 411, 592, 595, 505]], "c": [["United States", "Pakistan", "United Kingdom", "Japan", "South Korea", "Canada", "India", "Taiwan"], [845, 350, 251, 172, 165, 84, 81, 71]], "g": [["International TV Shows", "TV Dramas", "TV Comedies", "Crime TV Shows", "Kids' TV", "Docuseries", "Romantic TV Shows", "Reality TV"], [1349, 762, 573, 469, 448, 394, 370, 255]], "r": [["TV-MA", "TV-14", "TV-PG", "TV-Y7", "TV-Y", "TV-G"], [1143, 730, 321, 194, 175, 94]], "n": 2664}}, "hy": [[2005, 2006, 2007, 2008, 2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020], [80, 96, 88, 135, 152, 192, 185, 236, 286, 352, 555, 901, 1030, 1146, 1030, 953]], "fc": [970, 974, 978, 980, 982], "acc": [["Random Forest", 95.2], ["Logistic Regression", 94.8], ["Decision Tree", 94.4], ["Baseline", 69.7]]};const css=n=>getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+Chart.defaults.maintainAspectRatio=false;Chart.defaults.color=css("--mu");Chart.defaults.font.size=11;
+const R="#e50914",G=css("--gr"),mk=(id,cfg)=>new Chart(document.getElementById(id),cfg);
+const hb=(l,v,c)=>({type:"bar",data:{labels:l,datasets:[{data:v,backgroundColor:c}]},options:{indexAxis:"y",plugins:{legend:{display:false}}}});
+const c1=mk("c1",{type:"line",data:{labels:[],datasets:[{data:[],borderColor:R,backgroundColor:R+"33",fill:true,tension:.25}]},options:{plugins:{legend:{display:false}}}});
+const c2=mk("c2",hb([],[],R)),c3=mk("c3",hb([],[],G)),c4=mk("c4",{type:"bar",data:{labels:[],datasets:[{data:[],backgroundColor:R}]},options:{plugins:{legend:{display:false}}}});
+const hy=P.hy,fy=[2021,2022,2023,2024,2025];
+mk("c5",{type:"line",data:{labels:hy[0].concat(fy),datasets:[{label:"Actual",data:hy[1],borderColor:G,tension:.25},{label:"Forecast",data:Array(hy[1].length-1).fill(null).concat([hy[1].at(-1)],P.fc),borderColor:R,borderDash:[6,4],tension:.25}]},options:{plugins:{legend:{position:"bottom"}}}});
+mk("c6",{type:"bar",data:{labels:P.acc.map(a=>a[0]),datasets:[{data:P.acc.map(a=>a[1]),backgroundColor:[R,R,R,G]}]},options:{indexAxis:"y",scales:{x:{min:50,max:100}},plugins:{legend:{display:false}}}});
+function show(t){const d=P.D[t];
+ c1.data.labels=d.ya[0];c1.data.datasets[0].data=d.ya[1];
+ [[c2,d.c],[c3,d.g],[c4,d.r]].forEach(([c,s])=>{c.data.labels=s[0];c.data.datasets[0].data=s[1];c.update()});c1.update();
+ document.getElementById("cnt").textContent=d.n.toLocaleString()+" titles";
+ document.querySelectorAll("button").forEach(b=>b.classList.toggle("on",b.dataset.t===t))}
+document.querySelectorAll("button").forEach(b=>b.onclick=()=>show(b.dataset.t));show("All");
+</script></body></html>

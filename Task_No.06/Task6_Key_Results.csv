@@ -1,0 +1,9 @@
+Metric,Value
+Total titles,8790
+Movies (%),69.7
+TV Shows (%),30.3
+Top country,United States
+Top category,International Movies
+Best classifier,Random Forest
+Classifier accuracy,95.2%
+"Forecast (titles per year, 2021-2025)",970 - 982
